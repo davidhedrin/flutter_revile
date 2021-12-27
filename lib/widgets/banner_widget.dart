@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_revile/services/firebase_service.dart';
+import 'package:getwidget/getwidget.dart';
 
 class BannerWidget extends StatefulWidget {
   const BannerWidget({Key? key}) : super(key: key);
@@ -9,7 +12,26 @@ class BannerWidget extends StatefulWidget {
 }
 
 class _BannerWidgetState extends State<BannerWidget> {
+  final FirebaseService _service = FirebaseService();
   double scrollPosition = 0;
+  final List _bannerImage = [];
+
+  @override
+  void initState() {
+    getBannerData();
+    super.initState();
+  }
+
+  getBannerData(){
+    return _service.homebanner.get().then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        setState(() {
+          _bannerImage.add(doc['image']);
+        });
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -18,21 +40,25 @@ class _BannerWidgetState extends State<BannerWidget> {
           padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: Container(
+            child: _bannerImage.isEmpty ? GFShimmer(
+                showShimmerEffect: true,
+                mainColor: Colors.grey.shade500,
+                secondaryColor: Colors.grey.shade400,
+                child: Container(color: Colors.grey.shade300,)
+            ) : Container(
               height: 140,
               width: MediaQuery.of(context).size.width,
-              color: Colors.white,
-              child: PageView(
+              color: Colors.grey.shade200,
+              child: PageView.builder(
+                itemCount: _bannerImage.length,
+                itemBuilder: (BuildContext context, int index){
+                  return Image.network(_bannerImage[index], fit: BoxFit.cover,);
+                },
                 onPageChanged: (val){
                   setState(() {
                     scrollPosition = val.toDouble();
                   });
                 },
-                children: const [
-                  Center(child: Text('Banner 1', style: TextStyle(fontSize: 20),)),
-                  Center(child: Text('Banner 2', style: TextStyle(fontSize: 20),)),
-                  Center(child: Text('Banner 3', style: TextStyle(fontSize: 20),)),
-                ],
               ),
             ),
           ),
@@ -61,7 +87,7 @@ class DotsIndWidget extends StatelessWidget {
               decorator: DotsDecorator(
                 spacing: const EdgeInsets.all(2),
                 size: const Size.square(6),
-                activeSize: Size(12,6),
+                activeSize: const Size(12,6),
                 activeShape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(4),
                 )
