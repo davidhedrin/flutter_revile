@@ -11,21 +11,6 @@ class HomeScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white12,
-        appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(45),
-            child: AppBar(
-              elevation: 0,
-              centerTitle: true,
-              backgroundColor: Colors.transparent,
-              title: const Text('Revile App'),
-              actions: [
-                IconButton(
-                  icon: Icon(Icons.add_shopping_cart),
-                  onPressed: (){},
-                ),
-              ],
-            ),
-          ),
         body: ListView(
           children: const [
             SearchWidget(),
@@ -51,19 +36,29 @@ class SearchWidget extends StatelessWidget {
         SizedBox(
           height: 60,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                hintText: "Temukan...",
-                hintStyle: const TextStyle(color: Colors.grey),
-                contentPadding: const EdgeInsets.all(8),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+            padding: const EdgeInsets.all(10.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: "Temukan...",
+                      hintStyle: const TextStyle(color: Colors.grey),
+                      contentPadding: const EdgeInsets.all(8),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      prefixIcon: const Icon(IconlyBroken.search, size: 20,)
+                    ),
+                  ),
                 ),
-                prefixIcon: const Icon(IconlyBroken.search, size: 20,)
-              ),
+                IconButton(
+                  icon: const Icon(Icons.add_shopping_cart, color: Colors.white,),
+                  onPressed: (){},
+                ),
+              ],
             ),
           ),
         ),
